@@ -15,10 +15,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    MainWindow(QWidget *parent, int argc, char *argv[]);
 private slots:
     void on_select_file_btn_clicked();
 
 private:
+
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

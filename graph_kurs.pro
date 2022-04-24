@@ -9,14 +9,21 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    gstreamer.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    video.cpp
 
 HEADERS += \
-    mainwindow.h
+    gstreamer.h \
+    mainwindow.h \
+    video.h
 
 FORMS += \
     mainwindow.ui
+
+CONFIG += link_pkgconfig
+PKGCONFIG += gstreamer-1.0 glib-2.0 gobject-2.0 gstreamer-app-1.0 gstreamer-pbutils-1.0
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
