@@ -3,8 +3,10 @@
 
 #include <gstreamer.h>
 #include <qfiledialog.h>
+#include <video.h>
 
 GStreamer gst;
+Video video;
 
 MainWindow::MainWindow(QWidget *parent, int argc, char *argv[])
     : QMainWindow(parent)
@@ -22,7 +24,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_select_file_btn_clicked()
 {
-    QString file = QFileDialog::getOpenFileName(0, "Open Dialog", "", "*");
-    this->ui->coosed_file_label->setText(file);
-    gst.Analyse("https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm");
+    QString file = QFileDialog::getOpenFileName(0, tr("Open video"), "", tr("Video (*.mp4 *.mov *.wmv *.avi *.avihd *.flv *.f4v *.swf *.mkv *.webm *.mpg *.peg *.mp2 *.mpe *.mpv)"));
+    if (file != "")
+    {
+        this->ui->coosed_file_label->setText(file);
+        video = gst.Analyse(file);
+        this->ui->width_label->setText("Width: " + QString::number(video.getWidth()));
+        this->ui->FPS_label->setText("FPS: " + QString::number(video.getFPS()));
+        this->ui->Heigth_label->setText("Heigth: " + QString::number(video.getHeigth()));
+        this->ui->aspect_label->setText("Aspect Ratio: " + video.getAspectRatio());
+    }
 }

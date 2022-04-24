@@ -21,6 +21,10 @@ public:
     void setFileRath(const QString &value);
 
     Video(QString filePath, int FPS, int Height, int Width, QString aspectRatio);
+    Video();
+    QString getAspectRatio() const;
+    void setAspectRatio(const QString &value);
+
 private:
     QString fileRath;
     int FPS;

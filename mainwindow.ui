@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,31 +20,63 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="select_file_btn">
+   <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>30</y>
-      <width>86</width>
-      <height>28</height>
+      <x>10</x>
+      <y>10</y>
+      <width>771</width>
+      <height>161</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Select File</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="coosed_file_label">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>70</y>
-      <width>731</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QPushButton" name="select_file_btn">
+       <property name="text">
+        <string>Select File</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="coosed_file_label">
+       <property name="text">
+        <string>Path to video</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLabel" name="Heigth_label">
+         <property name="text">
+          <string>Heigth</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="width_label">
+         <property name="text">
+          <string>Width</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="FPS_label">
+         <property name="text">
+          <string>FPS</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="aspect_label">
+         <property name="text">
+          <string>AspectRatio</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

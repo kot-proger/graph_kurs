@@ -9,6 +9,21 @@ Video::Video(QString filePath, int FPS, int Height, int Width, QString aspectRat
     this->aspectRatio = aspectRatio;
 }
 
+Video::Video()
+{
+
+}
+
+QString Video::getAspectRatio() const
+{
+    return aspectRatio;
+}
+
+void Video::setAspectRatio(const QString &value)
+{
+    aspectRatio = value;
+}
+
 int Video::getHeigth() const
 {
     return Heigth;
