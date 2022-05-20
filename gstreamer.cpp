@@ -104,7 +104,7 @@ Video GStreamer::Analyse(QString filePath)
     return Video(filePath, FPS, Heigth, Width, aspect);
 }
 
-static void pad_data_handler(GstElement *src, GstPad *pad, CustomData *data);
+static void pad_added_handler(GstElement *src, GstPad *pad, CustomData *data);
 
 Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString aspectRatio)
 {
@@ -122,30 +122,79 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     data.source = gst_element_factory_make("uridecodebin", "source");
     data.tee = gst_element_factory_make("tee", "tee");
     data.audio_queue = gst_element_factory_make("queue", "audio_queue");
-    data.convert = gst_element_factory_make("audiocinvert", "convert");
+    data.convert = gst_element_factory_make("audioconvert", "convert");
     data.resample = gst_element_factory_make("audioresample", "resample");
     data.wavenc = gst_element_factory_make("wavenc", "wavenc");
-    data.sink = gst_element_factory_make("filesinc", "sink");
+    data.sink = gst_element_factory_make("filesink", "sink");
     data.wave_queue = gst_element_factory_make("queue", "wave_queue");
-    data.visual = gst_element_factory_make("wavescope", "visual");
-    data.wave_convert = gst_element_factory_make("videoconvert", "csp");
-    data.wave_sink = gst_element_factory_make("autovideosink", "wave_sink");
+    data.visual = gst_element_factory_make ("wavescope", "visual");
+    data.wave_convert = gst_element_factory_make ("videoconvert", "csp");
+    data.wave_sink = gst_element_factory_make ("autovideosink", "wave_sink");
 
     /*Create new empty pipline*/
     data.pipeline = gst_pipeline_new("gstreamer-pipline");
 
-    if(data.pipeline || !data.source || !data.tee || !data.audio_queue || !data.convert || !data.resample || !data.wavenc ||
-            !data.sink || !data.wave_queue || !data.visual ||!data.wave_convert || !data.wave_sink) {
+    if(!data.pipeline || !data.source || !data.tee || !data.audio_queue || !data.convert || !data.resample || !data.wavenc ||
+        !data.sink || !data.wave_queue || !data.visual ||!data.wave_convert || !data.wave_sink) {
         g_printerr("Not elements could be created\n");
+        return Video("Error, restart, please", 1, 1, 1, "1");
     }
+//    if(!data.pipeline) {
+//        g_printerr("1Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.source) {
+//        g_printerr("2Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.tee) {
+//        g_printerr("3Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.audio_queue) {
+//        g_printerr("4Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.convert) {
+//        g_printerr("5Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.resample) {
+//        g_printerr("6Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.wavenc) {
+//        g_printerr("7Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.sink) {
+//        g_printerr("8Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.wave_queue) {
+//        g_printerr("9Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.visual) {
+//        g_printerr("10Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.wave_convert) {
+//        g_printerr("11Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
+//    if(!data.wave_sink) {
+//        g_printerr("12Not elements could be created\n");
+//        return Video("Error, restart, please", 1, 1, 1, "1");
+//    }
 
     /*Build the pipline. Note that we are NOT linking source at this point. We will do it later.*/
     gst_bin_add_many(GST_BIN(data.pipeline), data.source, data.tee, data.audio_queue, data.convert, data.resample,
                      data.wavenc, data.sink, data.wave_queue,data.visual, data.wave_convert, data.wave_sink, NULL);
     if(!gst_element_link_many(data.convert, data.resample, data.tee, NULL) ||
             !gst_element_link_many(data.audio_queue, data.wavenc, data.sink, NULL) ||
-            !gst_element_link_many(data.wave_queue, data.visual, data.wave_convert, data.wave_sink, NULL)) {
-        g_printerr("Elements could be linked");
+            !gst_element_link_many(data.wave_queue, data.visual, data.wave_convert,data.wave_sink, NULL)) {
+        g_printerr("Elements could be linked\n");
         gst_object_unref(data.pipeline);
         return Video("Error, restart, please", 1, 1, 1, "1");
     }
@@ -158,21 +207,20 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     queue_wave_pad = gst_element_get_static_pad(data.wave_queue, "sink");
 
     /*Set the URL to play*/
-    g_object_set(data.source, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm", NULL);
+    g_object_set(data.source, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"/*video.getFilePath().toStdString().c_str()*/, NULL);
 
     /*Set the location to save audio file*/
-    g_object_set(data.source, "location", "aud.wav", NULL);
+    g_object_set(data.sink, "location", "result.wav", NULL);
 
     /*Set the audio visualaize style*/
     g_object_set(data.visual, "shader", 0, "style", 1, NULL);
 
     /*Connect to the pad-added signal*/
     g_signal_connect(data.source, "pad-added", G_CALLBACK(pad_added_handler), &data);
-
     /*Start playing*/
     ret = gst_element_set_state(data.pipeline, GST_STATE_PLAYING);
     if(GST_STATE_CHANGE_FAILURE == ret) {
-        g_printerr("unable to set the pipline to playing state");
+        g_printerr("unable to set the pipline to playing state\n");
         gst_object_unref(data.pipeline);
         return Video("Error, restart, please", 1, 1, 1, "1");
     }
@@ -220,7 +268,68 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(data.pipeline), GST_DEBUG_GRAPH_SHOW_ALL, "pipline");
 
     /*Release the request pads from the Tee, and unref them*/
+    gst_element_release_request_pad (data.tee, tee_audio_pad);
+    gst_element_release_request_pad (data.tee, tee_wave_pad);
+    gst_object_unref (tee_audio_pad);
+    gst_object_unref (tee_wave_pad);
+
+    /* Free resources */
+    if (msg != NULL)
+        gst_message_unref (msg);
+    gst_object_unref (bus);
+    gst_element_set_state (data.pipeline, GST_STATE_NULL);
+
+    gst_object_unref (data.pipeline);
+    g_print("finished");
 
     return Video("Error, restart, please", 1, 1, 1, "1");
 }
 
+static void pad_added_handler(GstElement *src, GstPad *new_pad, CustomData *data) {
+    GstPad *sink_pad = gst_element_get_static_pad(data->convert, "sink");
+    GstPadLinkReturn ret;
+    GstCaps *new_pad_caps = nullptr;
+    GstStructure *new_pad_struct = nullptr;
+    const gchar *new_pad_type = nullptr;
+
+    g_print("Received new pad '%s' from '%s':\n", GST_PAD_NAME (new_pad), GST_ELEMENT_NAME (src));
+
+    /*If our converter is already linked, we have nothing to do there*/
+    if(gst_pad_is_linked(sink_pad)) {
+        g_print("We are already linked. Ignoring. \n");
+        /* Unref the new pad's caps, if we got them */
+        if (new_pad_caps != NULL) gst_caps_unref(new_pad_caps);
+
+       /* Unref the sink pad */
+       gst_object_unref(sink_pad);
+       return;
+    }
+
+    /*Check the new pad`s type*/
+    new_pad_caps = gst_pad_get_current_caps(new_pad);
+    new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
+    new_pad_type = gst_structure_get_name(new_pad_struct);
+    if (!g_str_has_prefix(new_pad_type, "audio/x-raw")) {
+        g_print("It has type '%s' which is not raw audio. Ignoring.\n", new_pad_type);
+        /* Unref the new pad's caps, if we got them */
+        if (new_pad_caps != NULL) gst_caps_unref(new_pad_caps);
+
+       /* Unref the sink pad */
+       gst_object_unref(sink_pad);
+       return;
+    }
+
+    /*Attempt the link*/
+    ret = gst_pad_link(new_pad, sink_pad);
+    if(GST_PAD_LINK_FAILED(ret)) {
+        g_print("Type is '%s' but link failed.\n", new_pad_type);
+    } else {
+        g_print("Link succeeded (type '%s').\n", new_pad_type);
+    }
+    /* Unref the new pad's caps, if we got them */
+    if (new_pad_caps != NULL) gst_caps_unref(new_pad_caps);
+
+   /* Unref the sink pad */
+   gst_object_unref(sink_pad);
+   return;
+}

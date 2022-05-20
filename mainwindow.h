@@ -19,6 +19,8 @@ public:
 private slots:
     void on_select_file_btn_clicked();
 
+    void on_processBtn_clicked();
+
 private:
 
     Ui::MainWindow *ui;

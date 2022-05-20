@@ -7,6 +7,7 @@
 
 GStreamer gst;
 Video video;
+bool getVideo = false;
 
 MainWindow::MainWindow(QWidget *parent, int argc, char *argv[])
     : QMainWindow(parent)
@@ -29,9 +30,17 @@ void MainWindow::on_select_file_btn_clicked()
     {
         this->ui->coosed_file_label->setText(file);
         video = gst.Analyse(file);
+        getVideo = true;
         this->ui->width_label->setText("Width: " + QString::number(video.getWidth()));
         this->ui->FPS_label->setText("FPS: " + QString::number(video.getFPS()));
         this->ui->Heigth_label->setText("Heigth: " + QString::number(video.getHeigth()));
         this->ui->aspect_label->setText("Aspect Ratio: " + video.getAspectRatio());
+    }
+}
+
+void MainWindow::on_processBtn_clicked()
+{
+    if(getVideo) {
+        gst.Process(video, 30, 1080, 1920, "16:9");
     }
 }

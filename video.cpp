@@ -2,7 +2,7 @@
 
 Video::Video(QString filePath, int FPS, int Height, int Width, QString aspectRatio)
 {
-    this->fileRath = filePath;
+    this->filePath = filePath;
     this->FPS = FPS;
     this->Heigth = Height;
     this->Width = Width;
@@ -54,12 +54,12 @@ void Video::setFPS(int value)
     FPS = value;
 }
 
-QString Video::getFileRath() const
+QString Video::getFilePath() const
 {
-    return fileRath;
+    return filePath;
 }
 
-void Video::setFileRath(const QString &value)
+void Video::setFilePath(const QString &value)
 {
-    fileRath = value;
+    filePath = value;
 }
