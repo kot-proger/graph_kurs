@@ -112,7 +112,7 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     GstBus *bus;
     GstMessage *msg;
     GstStateChangeReturn ret;
-    gboolean terminate;
+    gboolean terminate = false;
     GstPad *tee_audio_pad;
     GstPad *tee_wave_pad;
     GstPad *queue_audio_pad;
@@ -139,54 +139,6 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
         g_printerr("Not elements could be created\n");
         return Video("Error, restart, please", 1, 1, 1, "1");
     }
-//    if(!data.pipeline) {
-//        g_printerr("1Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.source) {
-//        g_printerr("2Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.tee) {
-//        g_printerr("3Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.audio_queue) {
-//        g_printerr("4Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.convert) {
-//        g_printerr("5Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.resample) {
-//        g_printerr("6Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.wavenc) {
-//        g_printerr("7Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.sink) {
-//        g_printerr("8Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.wave_queue) {
-//        g_printerr("9Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.visual) {
-//        g_printerr("10Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.wave_convert) {
-//        g_printerr("11Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
-//    if(!data.wave_sink) {
-//        g_printerr("12Not elements could be created\n");
-//        return Video("Error, restart, please", 1, 1, 1, "1");
-//    }
 
     /*Build the pipline. Note that we are NOT linking source at this point. We will do it later.*/
     gst_bin_add_many(GST_BIN(data.pipeline), data.source, data.tee, data.audio_queue, data.convert, data.resample,
@@ -207,7 +159,9 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     queue_wave_pad = gst_element_get_static_pad(data.wave_queue, "sink");
 
     /*Set the URL to play*/
-    g_object_set(data.source, "uri", "https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"/*video.getFilePath().toStdString().c_str()*/, NULL);
+    gchar videoPath[20];
+    sprintf(videoPath, "file:/home/mech/Загрузки/Cantaloupe island (1080p) (via Skyload).mp4"/*, video.getFilePath().toStdString().c_str()*/);
+    g_object_set(data.source, "uri", /*"https://www.freedesktop.org/software/gstreamer-sdk/data/media/sintel_trailer-480p.webm"*/videoPath, NULL);
 
     /*Set the location to save audio file*/
     g_object_set(data.sink, "location", "result.wav", NULL);
@@ -224,7 +178,7 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
         gst_object_unref(data.pipeline);
         return Video("Error, restart, please", 1, 1, 1, "1");
     }
-
+    g_print("playing started\n");
     /*Listen to the bus*/
     bus = gst_element_get_bus(data.pipeline);
     do {
@@ -280,7 +234,7 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
     gst_element_set_state (data.pipeline, GST_STATE_NULL);
 
     gst_object_unref (data.pipeline);
-    g_print("finished");
+    g_print("finished\n");
 
     return Video("Error, restart, please", 1, 1, 1, "1");
 }
