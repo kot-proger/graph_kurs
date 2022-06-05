@@ -7,7 +7,7 @@
 
 GStreamer gst;
 Video video;
-bool getVideo = false;
+bool getVideo = true;
 
 MainWindow::MainWindow(QWidget *parent, int argc, char *argv[])
     : QMainWindow(parent)
