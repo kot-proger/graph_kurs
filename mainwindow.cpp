@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <iostream>
 #include <gstreamer.h>
 #include <qfiledialog.h>
 #include <video.h>
@@ -41,6 +41,28 @@ void MainWindow::on_select_file_btn_clicked()
 void MainWindow::on_processBtn_clicked()
 {
     if(getVideo) {
-        gst.Process(video, 30, 1080, 1920, "16:9");
+        gst.Process(video, ui->comboBox_4->currentText().toInt(), ui->comboBox->currentData().toInt(), ui->comboBox_2->currentData().toInt(), ui->comboBox_3->currentText());
+    }
+}
+
+void MainWindow::on_comboBox_3_currentIndexChanged(int index)
+{
+    printf("%dccc\n", ui->comboBox_2->currentIndex());
+
+    if (0 == index) {
+        ui->comboBox_2->addItems({"1536", "1200", "1080", "768"});
+
+        for (int i = 0; i<ui->comboBox_2->count(); i++) {
+            ui->comboBox_2->removeItem(i);
+            printf("%d\n",i);
+        }
+    }
+
+    if (1 == index) {
+        ui->comboBox_2->addItems({"1080", "900", "810", "720"});
+
+        for (int i = 0; i<4; i++) {
+            ui->comboBox_2->removeItem(i);
+        }
     }
 }

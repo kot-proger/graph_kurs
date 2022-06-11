@@ -21,6 +21,8 @@ private slots:
 
     void on_processBtn_clicked();
 
+    void on_comboBox_3_currentIndexChanged(int index);
+
 private:
 
     Ui::MainWindow *ui;

@@ -92,6 +92,11 @@
            <string>4:3</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>16:9</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -108,6 +113,21 @@
            <string>1920</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>1600</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1440</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1280</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
@@ -121,7 +141,22 @@
         <widget class="QComboBox" name="comboBox_2">
          <item>
           <property name="text">
-           <string>1536</string>
+           <string>1440</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1200</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1050</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>768</string>
           </property>
          </item>
         </widget>
@@ -137,7 +172,37 @@
         <widget class="QComboBox" name="comboBox_4">
          <item>
           <property name="text">
+           <string>30</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>35</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>40</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>45</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>50</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>55</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>60</string>
           </property>
          </item>
         </widget>

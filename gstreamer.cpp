@@ -116,7 +116,7 @@ Video GStreamer::Analyse(QString filePath)
         aspect = "4:1";
     }
 
-    return Video(filePath, FPS, Heigth, Width, aspect);
+    return Video(tmp, FPS, Heigth, Width, aspect);
 }
 
 static void pad_added_handler(GstElement *src, GstPad *pad, CustomData *data);
@@ -325,16 +325,18 @@ Video GStreamer::Process(Video video, int FPS, int Heigth, int Width, QString as
         return Video("Error, restart, please", 1, 1, 1, "1");
     }
 
-    gchar videoPath[255];
-    sprintf(videoPath, "/home/mech/Загрузки/sourceVideo.mp4");
-
-    g_object_set(data.source, "location", videoPath, NULL);
+    gchar tmp[255];
+    sprintf(tmp, "%s", video.getFilePath().toStdString().c_str());
+    g_object_set(data.source, "location", tmp, NULL);
 
     /*Set the location to save file*/
-    g_object_set(data.sink, "location", "result1.mp4", NULL);
+    sprintf(tmp, "%s_result.mp4", video.getFilePath().toStdString().c_str());
+    g_object_set(data.sink, "location", tmp, NULL);
 
-    g_object_set(data.capssetter1, "caps", gst_caps_from_string("video/x-raw,framerate=60/1"), NULL);
+    sprintf(tmp, "video/x-raw,framerate=%d/1", FPS);
+    g_object_set(data.capssetter1, "caps", gst_caps_from_string(tmp), NULL);
 
+    sprintf(tmp, "video/x-raw,width=%d,height=%d", Width, Heigth);
     g_object_set(data.capssetter, "caps", gst_caps_from_string("video/x-raw,width=1280,height=1024"), NULL);
     g_object_set(data.videoscale, "method", 9, NULL);
 
